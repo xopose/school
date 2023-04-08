@@ -31,6 +31,7 @@ public class JavaSchoolStarter {
     }
 
     private List<Map<String, Object>> insert(String[] tokens) throws Exception {
+        boolean notNull = false;
         if (!tokens[1].equalsIgnoreCase("values")) {
             throw new Exception("Invalid command syntax: " + String.join(" ", tokens[1]));
         }
@@ -45,42 +46,58 @@ public class JavaSchoolStarter {
             if (sub.equalsIgnoreCase("lastName")) {
                 int thirdQuoteIndex = s.indexOf("'", secondQuoteIndex + 1);
                 int fourthQuoteIndex = s.lastIndexOf("'");
-                value = s.substring(thirdQuoteIndex + 1, fourthQuoteIndex);
+                value = thirdQuoteIndex>1 & fourthQuoteIndex>1 ? s.substring(thirdQuoteIndex + 1, fourthQuoteIndex) : "";
             } else {
                 value = s.substring(secondQuoteIndex + 2);
             }
             switch (sub.toLowerCase()) {
                 case "id":
-                    long val = Long.parseLong(value);
-                    row.put("id", val);
-                    break;
-                case "lastname":
-                    if (value.matches("^[a-zA-Z]*$") | value.matches("^[а-яА-Я]*$")) {
-                        row.put("lastName", value);
-                    } else {
-                        throw new InvalidTypeException();
+                    if(value.length()>0) {
+                        row.put("id", Long.parseLong(value));
+                        notNull = true;
                     }
                     break;
+                case "lastname":
+                    if (value.length()>0){
+                        if(value.matches("^[a-zA-Z]*$") | value.matches("^[а-яА-Я]*$")) {
+                            row.put("lastName", value);
+                            notNull=true;
+
+                        } else {
+                            throw new InvalidTypeException();
+                        }
+                    }
+
+                    break;
                 case "age":
-                    long val2 = Long.parseLong(value);
-                    row.put("age", val2);
+                    if(value.length()>0) {
+                        row.put("age", Long.parseLong(value));
+                        notNull = true;
+                    }
                     break;
                 case "cost":
-                    double val3 = Double.parseDouble(value);
-                    row.put("cost", val3);
+                    if(value.length()>0) {
+                        row.put("cost", Double.parseDouble(value));
+                        notNull = true;
+                    }
                     break;
                 case "active":
-                    boolean val4 = Boolean.parseBoolean(value);
-                    row.put("active", val4);
+                    if(value.length()>0) {
+                        row.put("active", Boolean.parseBoolean(value));
+                        notNull = true;
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException();
             }
         }
-        List<Map<String, Object>> result = new ArrayList<>();
-        result.add(row);
-        data.add(row);
-        return result;
+        if (notNull) {
+            List<Map<String, Object>> result = new ArrayList<>();
+            result.add(row);
+            data.add(row);
+            return result;
+        }
+        else throw new NoSuchElementException();
     }
 
     private List<Map<String, Object>> update(String[] tokens) throws Exception {
@@ -92,7 +109,6 @@ public class JavaSchoolStarter {
     }
 
     private List<Map<String, Object>> select(String[] tokens) throws Exception {
-        Map<String, Object> row = new HashMap<>();
         List<Map<String, Object>> result = new ArrayList<>();
         if (tokens.length > 1 && !tokens[1].equalsIgnoreCase("where")) {
             throw new Exception("Invalid command syntax: " + String.join(" ", tokens));
@@ -133,12 +149,19 @@ public class JavaSchoolStarter {
                 a[a.length-1].equalsIgnoreCase("and") | a[a.length-1].equalsIgnoreCase("or")){
             throw new IllegalArgumentException();
         }
-        for (int i = 0; i< a.length; i++) {
-            if ((i < a.length - 1 && a[i + 1].equalsIgnoreCase("and")) |
-                    ((i == a.length - 1 && !a[i].equalsIgnoreCase("and")) && !a[i].equalsIgnoreCase("or"))) {
-                if (!a[i].equalsIgnoreCase("and") & !a[i].equalsIgnoreCase("or")) {
+        boolean flag_end = false;
+        for (int i = 0; i<= a.length-1; i+=2) {
+            if (!a[i].equalsIgnoreCase("and") & !a[i].equalsIgnoreCase("or")) {
+                if (a.length-1==0 | (flag_end && a[a.length-2].equalsIgnoreCase("and")) || a[i+1].equalsIgnoreCase("and")) {
+                    if(flag_end) {
+                        i = a.length-1;
+                    } else if (i==a.length-3) {
+                        flag_end = true;
+                    }
+
                     String sub;
                     String value;
+                    String oper = "";
                     int firstQuoteIndex = a[i].indexOf("'") + 1;
                     int secondQuoteIndex = a[i].indexOf("'", firstQuoteIndex + 1);
                     sub = a[i].substring(firstQuoteIndex, secondQuoteIndex);
@@ -148,17 +171,38 @@ public class JavaSchoolStarter {
                         value = a[i].substring(thirdQuoteIndex + 1, fourthQuoteIndex);
                     } else {
                         value = a[i].substring(secondQuoteIndex + 1);
-                        if (operator(value) != 0) {
-                            value = value.substring(operator(value));
+                        if (operator(value).length() > 0) {
+                            oper=operator(value);
+                            value = value.substring(operator(value).length());
                         }
                     }
+
                     switch (sub.toLowerCase()) {
                         case "id":
-                            long val = Long.parseLong(value);
-                            for (Map<String, Object> stringObjectMap : data) {
-                                if (stringObjectMap.containsKey("id") && stringObjectMap.containsValue(val)){
-                                    buffMap.put("id", val);
+                            if(value.length()>0) {
+                                if (buffList.size()>0) {
+                                    for (Map<String, Object> map : buffList) {
+                                        Object mapValue = map.get("id");
+                                        if (compareValues(mapValue, oper, Long.parseLong(value))) {
+                                            if (!buffList.contains(map)) {
+                                                buffList.add(map);
+                                            }
+                                        }
+                                    }
                                 }
+                                else {
+                                    for (Map<String, Object> map : data) {
+                                        Object mapValue = map.get("id");
+                                        if (compareValues(mapValue, oper, Long.parseLong(value))) {
+                                            if (!buffList.contains(map)) {
+                                                buffList.add(map);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                throw new NullPointerException();
                             }
                             break;
                         case "lastname":
@@ -173,11 +217,30 @@ public class JavaSchoolStarter {
                             }
                             break;
                         case "age":
-                            long val2 = Long.parseLong(value);
-                            for (Map<String, Object> stringObjectMap : data) {
-                                if (stringObjectMap.containsKey("age") && stringObjectMap.containsValue(val2)){
-                                    buffMap.put("age", val2);
+                            if(value.length()>0) {
+                                if (buffList.size()>0) {
+                                    for (Map<String, Object> map : buffList) {
+                                        Object mapValue = map.get("age");
+                                        if (compareValues(mapValue, oper, Long.parseLong(value))) {
+                                            if (!buffList.contains(map)) {
+                                                buffList.add(map);
+                                            }
+                                        }
+                                    }
                                 }
+                                else {
+                                    for (Map<String, Object> map : data) {
+                                        Object mapValue = map.get("age");
+                                        if (compareValues(mapValue, oper, Long.parseLong(value))) {
+                                            if (!buffList.contains(map)) {
+                                                buffList.add(map);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                throw new NullPointerException();
                             }
                             break;
                         case "cost":
@@ -216,13 +279,36 @@ public class JavaSchoolStarter {
         return new ArrayList<>();
     }
 
-    private int operator(String a){
-        if(a.startsWith(">=") |  a.startsWith("<=") | a.startsWith("!=") | a.startsWith("=")){ return 2; }
-        else {if (a.startsWith(">") | a.startsWith("<")){ return 1; }
-        else  if (a.startsWith("like")){ return 4; }
-        else if (a.startsWith("ilike")){return 5;}
-        return 0;
+    private String operator(String a){
+        if(a.startsWith(">="))     return ">=";
+        if(a.startsWith("<="))     return "<=";
+        if(a.startsWith("!="))     return "!=";
+        if(a.startsWith("="))      return "=";
+        if(a.startsWith(">"))      return ">";
+        if(a.startsWith("<"))      return "<";
+        if(a.startsWith("like"))   return "like";
+        if (a.startsWith("ilike")) return "ilike";
+        return "";
     }
+    private boolean compareValues(Object mapValue, String operator, long value) {
+        if (mapValue instanceof Long) {
+            long longValue = (Long) mapValue;
+            switch (operator) {
+                case ">":
+                    return longValue > value;
+                case ">=":
+                    return longValue >= value;
+                case "<":
+                    return longValue < value;
+                case "<=":
+                    return longValue <= value;
+                case "!=":
+                    return longValue != value;
+                default:
+                    return false;
+            }
+        }
+        return false;
     }
 
 }
