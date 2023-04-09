@@ -16,7 +16,7 @@ public class JavaSchoolStarter {
 
     //На вход запрос, на выход результат выполнения запроса
     public List<Map<String, Object>> execute(String request) throws Exception {
-        String[] tokens = request.trim().split("\\s+");
+        String[] tokens = request.trim().split("(?=([^\"]*\"[^\"]*\")*[^\"]*$)\\s+");
         if (tokens.length == 0) {
             throw new Exception("Empty command");
         }
@@ -43,36 +43,42 @@ public class JavaSchoolStarter {
             int firstQuoteIndex = s.indexOf("'") + 1;
             int secondQuoteIndex = s.indexOf("'", firstQuoteIndex + 1);
             sub = s.substring(firstQuoteIndex, secondQuoteIndex);
-            if (sub.equalsIgnoreCase("lastName")) {
+            if (sub.replace(" ", "").equalsIgnoreCase("lastName")) {
                 int thirdQuoteIndex = s.indexOf("'", secondQuoteIndex + 1);
                 int fourthQuoteIndex = s.lastIndexOf("'");
                 value = thirdQuoteIndex>1 & fourthQuoteIndex>1 ? s.substring(thirdQuoteIndex + 1, fourthQuoteIndex) : "";
             } else {
                 value = s.substring(secondQuoteIndex + 2);
             }
-            switch (sub.toLowerCase()) {
+            switch (sub.toLowerCase().replace(" ", "")) {
                 case "id":
                     if(value.length()>0) {
                         row.put("id", Long.parseLong(value));
                         notNull = true;
                     }
+                    else {
+                        row.put("id", null);
+                    }
                     break;
                 case "lastname":
                     if (value.length()>0){
-                        if(value.matches("^[a-zA-Z]*$") | value.matches("^[а-яА-Я]*$")) {
+                        if(value.matches("^[a-zA-Z ]*$") | value.matches("^[а-яА-Я ]*$")) {
                             row.put("lastName", value);
                             notNull=true;
 
-                        } else {
-                            throw new InvalidTypeException();
                         }
                     }
-
+                    else {
+                        row.put("lastName", null);
+                    }
                     break;
                 case "age":
                     if(value.length()>0) {
                         row.put("age", Long.parseLong(value));
                         notNull = true;
+                    }
+                    else {
+                        row.put("age", null);
                     }
                     break;
                 case "cost":
@@ -80,11 +86,17 @@ public class JavaSchoolStarter {
                         row.put("cost", Double.parseDouble(value));
                         notNull = true;
                     }
+                    else {
+                        row.put("cost", null);
+                    }
                     break;
                 case "active":
                     if(value.length()>0) {
                         row.put("active", Boolean.parseBoolean(value));
                         notNull = true;
+                    }
+                    else {
+                        row.put("active", null);
                     }
                     break;
                 default:
@@ -128,22 +140,19 @@ public class JavaSchoolStarter {
     }
     private List<Map<String, Object>> where(String[] tokens) throws InvalidTypeException {
         StringBuilder sb = new StringBuilder();
-
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i].trim();
-
             if (token.equalsIgnoreCase("and") || token.equalsIgnoreCase("or")) {
                 sb.append(" ");
                 sb.append(token.toUpperCase());
                 sb.append(" ");
-            } else if (token.equals("=") || token.equals(">=") || token.equals("<=") || token.equals("<") || token.equals(">")) {
+            } else if (token.equals("=") || token.equals(">=") || token.equals("<=") || token.equals("<") || token.equals(">") || token.equals("like") || token.equals("ilike")) {
                 sb.append(token);
             } else {
                 sb.append(token);
             }
         }
         List<Map<String, Object>> buffList = new ArrayList<>();
-        Map<String, Object> buffMap= new HashMap<>();
         String[] a = sb.toString().split(" ");
         if (a[0].equalsIgnoreCase("and") | a[0].equalsIgnoreCase("or") |
                 a[a.length-1].equalsIgnoreCase("and") | a[a.length-1].equalsIgnoreCase("or")){
@@ -158,17 +167,18 @@ public class JavaSchoolStarter {
                     } else if (i==a.length-3) {
                         flag_end = true;
                     }
-
                     String sub;
                     String value;
                     String oper = "";
+                    String strOper = "";
                     int firstQuoteIndex = a[i].indexOf("'") + 1;
                     int secondQuoteIndex = a[i].indexOf("'", firstQuoteIndex + 1);
                     sub = a[i].substring(firstQuoteIndex, secondQuoteIndex);
-                    if (sub.equalsIgnoreCase("lastName")) {
+                    if (sub.replace(" ", "").equalsIgnoreCase("lastName")) {
                         int thirdQuoteIndex = a[i].indexOf("'", secondQuoteIndex + 1);
                         int fourthQuoteIndex = a[i].lastIndexOf("'");
                         value = a[i].substring(thirdQuoteIndex + 1, fourthQuoteIndex);
+                        strOper = a[i].substring(secondQuoteIndex+1, thirdQuoteIndex).strip();
                     } else {
                         value = a[i].substring(secondQuoteIndex + 1);
                         if (operator(value).length() > 0) {
@@ -176,51 +186,105 @@ public class JavaSchoolStarter {
                             value = value.substring(operator(value).length());
                         }
                     }
-
-                    switch (sub.toLowerCase()) {
+                    boolean lastResult = true;
+                    switch (sub.toLowerCase().replace(" ", "")) {
                         case "id":
-                            if(value.length()>0) {
-                                if (buffList.size()>0) {
-                                    for (Map<String, Object> map : buffList) {
-                                        Object mapValue = map.get("id");
-                                        if (compareValues(mapValue, oper, Long.parseLong(value))) {
-                                            if (!buffList.contains(map)) {
-                                                buffList.add(map);
-                                            }
+                            if (value.length()==0){
+                                value="null";
+                            }
+                            if (buffList.size() > 0) {
+                                Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                while (iterator.hasNext()) {
+                                    Map<String, Object> map = iterator.next();
+                                    Object mapValue = map.get("id");
+                                    if (value.startsWith("null")){
+                                        if (!compareValues(mapValue, oper, Double.NaN)) {
+                                            iterator.remove();
                                         }
                                     }
-                                }
-                                else {
-                                    for (Map<String, Object> map : data) {
-                                        Object mapValue = map.get("id");
-                                        if (compareValues(mapValue, oper, Long.parseLong(value))) {
-                                            if (!buffList.contains(map)) {
-                                                buffList.add(map);
-                                            }
+                                    else {
+                                        if (!compareValues(mapValue, oper, Long.parseLong(value))) {
+                                            iterator.remove();
                                         }
                                     }
                                 }
                             }
+
                             else {
-                                throw new NullPointerException();
+                                for (Map<String, Object> map : data) {
+                                    Object mapValue = map.get("id");
+                                    if (value.startsWith("null")){
+                                        if (compareValues(mapValue, oper, Double.NaN)) {
+                                            if (!buffList.contains(map)) {
+                                                buffList.add(map);
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        if (compareValues(mapValue, oper, Long.parseLong(value))) {
+                                            if (!buffList.contains(map)) {
+                                                buffList.add(map);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             break;
                         case "lastname":
-                            if (value.matches("^[a-zA-Z]*$") | value.matches("^[а-яА-Я]*$")) {
-                                for (Map<String, Object> stringObjectMap : data) {
-                                    if (stringObjectMap.containsKey("lastName") && stringObjectMap.containsValue(value)){
-                                        buffMap.put("lastName", value);
+                            if(value.length()>0 && (value.matches("^.*[a-zA-Z ]*.*$") | value.matches("^.*[а-яА-Я ]*.*$"))) {
+                                if (buffList.size() > 0) {
+                                    Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                    while (iterator.hasNext()) {
+                                        Map<String, Object> map = iterator.next();
+                                        Object mapValue = map.get("lastName");
+                                        if (!compareString(mapValue, strOper, value)) {
+                                            iterator.remove();
+                                        }
                                     }
                                 }
-                            } else {
-                                throw new InvalidTypeException();
+
+                                else {
+                                    for (Map<String, Object> map : data) {
+                                        Object mapValue = map.get("lastName");
+                                        if (compareString(mapValue, strOper, value)) {
+                                            if (!buffList.contains(map)) {
+                                                buffList.add(map);
+                                            }
+                                        }
+                                    }
+                                }
                             }
+                            else {
+                                throw new NullPointerException();
+                            }
+
                             break;
                         case "age":
-                            if(value.length()>0) {
-                                if (buffList.size()>0) {
-                                    for (Map<String, Object> map : buffList) {
-                                        Object mapValue = map.get("age");
+                            if (value.length()==0){
+                                value="null";
+                            }
+                            if (buffList.size() > 0) {
+                                Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                while (iterator.hasNext()) {
+                                    Map<String, Object> map = iterator.next();
+                                    Object mapValue = map.get("age");
+                                    if (!compareValues(mapValue, oper, Long.parseLong(value))) {
+                                        iterator.remove();
+                                    }
+                                }
+                            }
+
+                            else {
+                                for (Map<String, Object> map : data) {
+                                    Object mapValue = map.get("age");
+                                    if (value.startsWith("null")){
+                                        if (compareValues(mapValue, oper, Double.NaN)) {
+                                            if (!buffList.contains(map)) {
+                                                buffList.add(map);
+                                            }
+                                        }
+                                    }
+                                    else {
                                         if (compareValues(mapValue, oper, Long.parseLong(value))) {
                                             if (!buffList.contains(map)) {
                                                 buffList.add(map);
@@ -228,10 +292,24 @@ public class JavaSchoolStarter {
                                         }
                                     }
                                 }
+                            }
+                            break;
+                        case "cost":
+                            if(value.length()>0) {
+                                if (buffList.size() > 0) {
+                                    Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                    while (iterator.hasNext()) {
+                                        Map<String, Object> map = iterator.next();
+                                        Object mapValue = map.get("cost");
+                                        if (!compareValues(mapValue, oper, Double.parseDouble(value))) {
+                                            iterator.remove();
+                                        }
+                                    }
+                                }
                                 else {
                                     for (Map<String, Object> map : data) {
-                                        Object mapValue = map.get("age");
-                                        if (compareValues(mapValue, oper, Long.parseLong(value))) {
+                                        Object mapValue = map.get("cost");
+                                        if (compareValues(mapValue, oper, Double.parseDouble(value))) {
                                             if (!buffList.contains(map)) {
                                                 buffList.add(map);
                                             }
@@ -243,39 +321,48 @@ public class JavaSchoolStarter {
                                 throw new NullPointerException();
                             }
                             break;
-                        case "cost":
-                            double val3 = Double.parseDouble(value);
-                            for (Map<String, Object> stringObjectMap : data) {
-                                if (stringObjectMap.containsKey("cost") && stringObjectMap.containsValue(val3)){
-                                    buffMap.put("cost", val3);
+                        case "active":
+                            if(value.length()>0) {
+                                boolean boolValue = value.equalsIgnoreCase("true") | value.equalsIgnoreCase("false");
+                                if (boolValue) {
+                                    if (buffList.size() > 0) {
+
+                                        Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                        while (iterator.hasNext()) {
+                                            Map<String, Object> map = iterator.next();
+                                            Object mapValue = map.get("active");
+                                            if (!(boolean) mapValue == value.equalsIgnoreCase("true")) {
+                                                iterator.remove();
+                                            }
+                                        }
+                                    } else {
+                                        for (Map<String, Object> map : data) {
+                                            Object mapValue = map.get("active");
+                                            if (!(boolean) mapValue == value.equalsIgnoreCase("true")) {
+                                                if (!buffList.contains(map)) {
+                                                    buffList.add(map);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    throw new IllegalArgumentException();
                                 }
                             }
-                            break;
-                        case "active":
-                            boolean val4 = Boolean.parseBoolean(value);
-
-                            for (Map<String, Object> stringObjectMap : data) {
-                                if (stringObjectMap.containsKey("active") && stringObjectMap.containsValue(val4)){
-                                    buffMap.put("active", val4);
-                                }
+                            else {
+                                throw new NullPointerException();
                             }
                             break;
                         default:
                             throw new IllegalArgumentException();
                     }
                 }
-
             }
             else {
 
             }
         }
-        buffList.add(buffMap);
-        for (Map<String, Object> j: buffList){
-            System.out.println(j.keySet() + " " + j.values());
-        }
-
-
         return buffList;
     }
 
@@ -290,25 +377,44 @@ public class JavaSchoolStarter {
         if (a.startsWith("ilike")) return "ilike";
         return "";
     }
-    private boolean compareValues(Object mapValue, String operator, long value) {
-        if (mapValue instanceof Long) {
-            long longValue = (Long) mapValue;
-            switch (operator) {
-                case ">":
-                    return longValue > value;
-                case ">=":
-                    return longValue >= value;
-                case "<":
-                    return longValue < value;
-                case "<=":
-                    return longValue <= value;
-                case "!=":
-                    return longValue != value;
-                default:
-                    return false;
+    private boolean compareValues(Object mapValue, String operator, double value) {
+        if (mapValue == null & (operator.equals(">") | operator.equals(">="))) return false;
+        if (mapValue == null & (!operator.equals(">") & operator.equals("!="))) return false;
+        if (mapValue == null & Double.isNaN(value)) return true;
+        if (mapValue!=null) {
+            if (mapValue instanceof Long) {
+                long longValue = (Long) mapValue;
+                double doubleValue = (double) longValue;
+                return compareValues(doubleValue, operator, value);
+            } else if (mapValue instanceof Double) {
+                double doubleValue = (Double) mapValue;
+                return switch (operator) {
+                    case "=" -> doubleValue == value;
+                    case ">" -> doubleValue > value;
+                    case ">=" -> doubleValue >= value;
+                    case "<" -> doubleValue < value;
+                    case "<=" -> doubleValue <= value;
+                    case "!=" -> doubleValue != value;
+                    default -> false;
+                };
             }
         }
         return false;
     }
 
+    private boolean compareString(Object mapValue, String operator, String value) {
+        if (mapValue == null & (operator.equals(">") | operator.equals(">=") | operator.equals("<") | operator.equals("<="))) return false;
+        if (mapValue == null & (!operator.equals(">") & operator.equals("!="))) return false;
+        if (mapValue == null & (value==null | (value.length()>0 & value.equals("null")))) return true;
+        if (mapValue != null) {
+            return switch (operator) {
+                case "=" -> mapValue.toString().equals(value);
+                case "!=" -> !mapValue.toString().equals(value);
+                case "like" -> mapValue.toString().matches(value.replaceAll("%", ".*"));
+                case "ilike" -> mapValue.toString().toLowerCase().matches(value.toLowerCase().replaceAll("%", ".*"));
+                default -> false;
+            };
+        }
+        return false;
+    }
 }
