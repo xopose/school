@@ -276,7 +276,7 @@ public class JavaSchoolStarter {
         }
 
 
-        return new ArrayList<>();
+        return buffList;
     }
 
     private String operator(String a){
