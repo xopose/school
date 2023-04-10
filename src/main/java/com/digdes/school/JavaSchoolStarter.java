@@ -161,7 +161,7 @@ public class JavaSchoolStarter {
         boolean flag_end = false;
         for (int i = 0; i<= a.length-1; i+=2) {
             if (!a[i].equalsIgnoreCase("and") & !a[i].equalsIgnoreCase("or")) {
-                if (a.length-1==0 | (flag_end && a[a.length-2].equalsIgnoreCase("and")) || a[i+1].equalsIgnoreCase("and")) {
+                if (a[0].equalsIgnoreCase("and") || a[0].equalsIgnoreCase("or") || a[a.length-1].equalsIgnoreCase("and") || a[a.length-1].equalsIgnoreCase("or")){
                     if(flag_end) {
                         i = a.length-1;
                     } else if (i==a.length-3) {
@@ -228,6 +228,15 @@ public class JavaSchoolStarter {
                                         }
                                     }
                                 }
+                                if (buffList.isEmpty()){
+                                    for (int j = i; j<=value.length()-1; j++){
+                                        if (a[j].equalsIgnoreCase("or")) {
+                                            i=j;
+
+                                        }
+                                        if (j==value.length()-1) return new ArrayList<>();
+                                    }
+                                }
                             }
                             break;
                         case "lastname":
@@ -290,6 +299,15 @@ public class JavaSchoolStarter {
                                                 buffList.add(map);
                                             }
                                         }
+                                    }
+                                }
+                                if (buffList.isEmpty()){
+                                    for (int j = i; j<=value.length()-1; j++){
+                                        if (a[j].equalsIgnoreCase("or")) {
+                                            i=j;
+
+                                        }
+                                        if (j==value.length()-1) return new ArrayList<>();
                                     }
                                 }
                             }
@@ -358,9 +376,13 @@ public class JavaSchoolStarter {
                             throw new IllegalArgumentException();
                     }
                 }
-            }
-            else {
-
+                else if ((flag_end && a[a.length-2].equalsIgnoreCase("or")) || a[i+1].equalsIgnoreCase("or")) {
+                    if(flag_end) {
+                        i = a.length-1;
+                    } else if (i==a.length-3) {
+                        flag_end = true;
+                    }
+                }
             }
         }
         return buffList;
