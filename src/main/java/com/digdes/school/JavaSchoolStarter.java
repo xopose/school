@@ -253,13 +253,39 @@ public class JavaSchoolStarter {
                         case "lastname":
                             if(value.length()>0 && (value.matches("^.*[a-zA-Z ]*.*$") | value.matches("^.*[а-яА-Я ]*.*$"))) {
                                 if (buffList.size() > 0) {
-                                    Iterator<Map<String, Object>> iterator = buffList.iterator();
-                                    while (iterator.hasNext()) {
-                                        Map<String, Object> map = iterator.next();
-                                        Object mapValue = map.get("lastName");
-                                        if (!compareString(mapValue, strOper, value)) {
-                                            iterator.remove();
+                                    if ((flag_end && a[a.length-2].equalsIgnoreCase("and")) || (!flag_end &&a[i+1].equalsIgnoreCase("and"))){
+                                        Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                        while (iterator.hasNext()) {
+                                            Map<String, Object> map = iterator.next();
+                                            Object mapValue = map.get("lastName");
+                                            if (value.startsWith("null")) {
+                                                if (!compareString(mapValue, oper, value)) {
+                                                    iterator.remove();
+                                                }
+                                            } else {
+                                                if (!compareString(mapValue, oper, value)) {
+                                                    iterator.remove();
+                                                }
+                                            }
                                         }
+                                    }
+                                    else if ((flag_end && a[a.length-2].equalsIgnoreCase("or")) || (!flag_end &&a[i+1].equalsIgnoreCase("or"))){
+                                        List<Map<String, Object>> compareList = new ArrayList<>();
+                                        for (Map<String, Object> map : buffList) {
+                                            Object mapValue = map.get("lastName");
+                                            if (value.startsWith("null")) {
+                                                if (!compareString(mapValue, oper, value)) {
+                                                    compareList.add(map);
+                                                }
+                                            } else {
+                                                if (!compareString(mapValue, oper, value)) {
+                                                    compareList.add(map);
+                                                }
+                                            }
+                                        }
+                                        buffList.removeAll(compareList);
+                                        buffList.addAll(compareList.stream().filter(item -> !buffList.contains(item)).toList());
+                                        compareList.clear();
                                     }
                                 }
 
@@ -473,10 +499,10 @@ public class JavaSchoolStarter {
     }
 
     private boolean compareString(Object mapValue, String operator, String value) {
-        if (mapValue == null & (operator.equals(">") | operator.equals(">=") | operator.equals("<") | operator.equals("<="))) return false;
-        if (mapValue == null & (!operator.equals(">") & operator.equals("!="))) return false;
+        if (mapValue == null & (value==null & operator.equals("!="))) return false;
         if (mapValue == null & (value==null | (value.length()>0 & value.equals("null")))) return true;
         if (mapValue != null) {
+            System.out.println(mapValue.toString().equals(value));
             return switch (operator) {
                 case "=" -> mapValue.toString().equals(value);
                 case "!=" -> !mapValue.toString().equals(value);
