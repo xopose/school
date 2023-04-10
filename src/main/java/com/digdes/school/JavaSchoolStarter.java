@@ -100,8 +100,6 @@ public class JavaSchoolStarter {
             }
         }
         if (notNull) {
-            List<Map<String, Object>> result = new ArrayList<>();
-            result.add(row);
             data.add(row);
             return data;
         }
