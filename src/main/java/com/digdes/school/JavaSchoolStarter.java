@@ -118,7 +118,18 @@ public class JavaSchoolStarter {
     }
 
     private List<Map<String, Object>> delete(String[] tokens) throws Exception {
-        return null;
+        List<Map<String, Object>> result = new ArrayList<>();
+        if (tokens.length > 1 && !tokens[1].equalsIgnoreCase("where")) {
+            throw new Exception("Invalid command syntax: " + String.join(" ", tokens));
+        }
+
+        else if (tokens.length > 1 && tokens[1].equalsIgnoreCase("where")) {
+            String[] keys = Arrays.copyOfRange(tokens, 2, tokens.length);
+            data.removeAll(where(keys));
+        }
+
+        else { data.clear(); }
+        return data;
     }
 
     private List<Map<String, Object>> select(String[] tokens) throws Exception {
@@ -129,10 +140,6 @@ public class JavaSchoolStarter {
 
         else if (tokens.length > 1 && tokens[1].equalsIgnoreCase("where")) {
             String[] keys = Arrays.copyOfRange(tokens, 2, tokens.length);
-            for (String s: keys){
-                //System.out.println(s);
-
-            }
             result.addAll(where(keys));
         }
 
