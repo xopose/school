@@ -19,7 +19,7 @@ public class Main {
             //List<Map<String,Object>> result2 = starter.execute("UPDATE VALUES 'active'=false, 'cost'=10.1 where 'id'=3");
             //Получение всех данных из коллекции (т.е. в данном примере вернется 1 запись)
             //and 'lastName' like 'Федоров'
-            List<Map<String,Object>> result3 = starter.execute("SELECT WHERE 'id'>=1 and 'lastname'='Фед оров'");
+            List<Map<String,Object>> result3 = starter.execute("SELECT WHERE 'id'>=1 and 'lastname' like 'Фед%оров%'");
             for (Map<String, Object> stringObjectMap : result3) {
                 System.out.println(stringObjectMap.keySet() + " " + stringObjectMap.values());
             }

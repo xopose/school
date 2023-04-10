@@ -259,11 +259,11 @@ public class JavaSchoolStarter {
                                             Map<String, Object> map = iterator.next();
                                             Object mapValue = map.get("lastName");
                                             if (value.startsWith("null")) {
-                                                if (!compareString(mapValue, oper, value)) {
+                                                if (!compareString(mapValue, strOper, value)) {
                                                     iterator.remove();
                                                 }
                                             } else {
-                                                if (!compareString(mapValue, oper, value)) {
+                                                if (!compareString(mapValue, strOper, value)) {
                                                     iterator.remove();
                                                 }
                                             }
@@ -274,11 +274,11 @@ public class JavaSchoolStarter {
                                         for (Map<String, Object> map : buffList) {
                                             Object mapValue = map.get("lastName");
                                             if (value.startsWith("null")) {
-                                                if (!compareString(mapValue, oper, value)) {
+                                                if (!compareString(mapValue, strOper, value)) {
                                                     compareList.add(map);
                                                 }
                                             } else {
-                                                if (!compareString(mapValue, oper, value)) {
+                                                if (!compareString(mapValue, strOper, value)) {
                                                     compareList.add(map);
                                                 }
                                             }
@@ -422,14 +422,39 @@ public class JavaSchoolStarter {
                                 boolean boolValue = value.equalsIgnoreCase("true") | value.equalsIgnoreCase("false");
                                 if (boolValue) {
                                     if (buffList.size() > 0) {
-
-                                        Iterator<Map<String, Object>> iterator = buffList.iterator();
-                                        while (iterator.hasNext()) {
-                                            Map<String, Object> map = iterator.next();
-                                            Object mapValue = map.get("active");
-                                            if (!(boolean) mapValue == value.equalsIgnoreCase("true")) {
-                                                iterator.remove();
+                                        if ((flag_end && a[a.length-2].equalsIgnoreCase("and")) || (!flag_end &&a[i+1].equalsIgnoreCase("and"))){
+                                            Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                            while (iterator.hasNext()) {
+                                                Map<String, Object> map = iterator.next();
+                                                Object mapValue = map.get("active");
+                                                if (value.startsWith("null")) {
+                                                    if (!(boolean) mapValue == value.equalsIgnoreCase("null")) {
+                                                        iterator.remove();
+                                                    }
+                                                } else {
+                                                    if (!(boolean) mapValue == value.equalsIgnoreCase("true")) {
+                                                        iterator.remove();
+                                                    }
+                                                }
                                             }
+                                        }
+                                        else if ((flag_end && a[a.length-2].equalsIgnoreCase("or")) || (!flag_end &&a[i+1].equalsIgnoreCase("or"))){
+                                            List<Map<String, Object>> compareList = new ArrayList<>();
+                                            for (Map<String, Object> map : buffList) {
+                                                Object mapValue = map.get("cost");
+                                                if (value.startsWith("null")) {
+                                                    if (!compareValues(mapValue, oper, Double.NaN)) {
+                                                        compareList.add(map);
+                                                    }
+                                                } else {
+                                                    if (!compareValues(mapValue, oper, Double.parseDouble(value))) {
+                                                        compareList.add(map);
+                                                    }
+                                                }
+                                            }
+                                            buffList.removeAll(compareList);
+                                            buffList.addAll(compareList.stream().filter(item -> !buffList.contains(item)).toList());
+                                            compareList.clear();
                                         }
                                     } else {
                                         for (Map<String, Object> map : data) {
@@ -502,7 +527,6 @@ public class JavaSchoolStarter {
         if (mapValue == null & (value==null & operator.equals("!="))) return false;
         if (mapValue == null & (value==null | (value.length()>0 & value.equals("null")))) return true;
         if (mapValue != null) {
-            System.out.println(mapValue.toString().equals(value));
             return switch (operator) {
                 case "=" -> mapValue.toString().equals(value);
                 case "!=" -> !mapValue.toString().equals(value);
