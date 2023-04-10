@@ -580,7 +580,6 @@ public class JavaSchoolStarter {
         }
         return false;
     }
-
     private boolean compareString(Object mapValue, String operator, String value) {
         if (mapValue == null & (value==null & operator.equals("!="))) return false;
         if (mapValue == null & (value==null | (value.length()>0 & value.equals("null")))) return true;
