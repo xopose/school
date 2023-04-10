@@ -5,6 +5,7 @@ import com.sun.jdi.InvalidTypeException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class JavaSchoolStarter {
     private List<Map<String, Object>> data = new ArrayList<>();
@@ -161,7 +162,7 @@ public class JavaSchoolStarter {
         boolean flag_end = false;
         for (int i = 0; i<= a.length-1; i+=2) {
             if (!a[i].equalsIgnoreCase("and") & !a[i].equalsIgnoreCase("or")) {
-                if (a[0].equalsIgnoreCase("and") || a[0].equalsIgnoreCase("or") || a[a.length-1].equalsIgnoreCase("and") || a[a.length-1].equalsIgnoreCase("or")){
+                if (a.length-1==0 || ((flag_end && a[a.length-2].equalsIgnoreCase("and")) || (!flag_end && a[i+1].equalsIgnoreCase("and"))) || ((flag_end && a[a.length-2].equalsIgnoreCase("or")) || (!flag_end && a[i+1].equalsIgnoreCase("or")))) {
                     if(flag_end) {
                         i = a.length-1;
                     } else if (i==a.length-3) {
@@ -186,28 +187,47 @@ public class JavaSchoolStarter {
                             value = value.substring(operator(value).length());
                         }
                     }
-                    boolean lastResult = true;
                     switch (sub.toLowerCase().replace(" ", "")) {
                         case "id":
                             if (value.length()==0){
                                 value="null";
                             }
                             if (buffList.size() > 0) {
-                                Iterator<Map<String, Object>> iterator = buffList.iterator();
-                                while (iterator.hasNext()) {
-                                    Map<String, Object> map = iterator.next();
-                                    Object mapValue = map.get("id");
-                                    if (value.startsWith("null")){
-                                        if (!compareValues(mapValue, oper, Double.NaN)) {
-                                            iterator.remove();
-                                        }
-                                    }
-                                    else {
-                                        if (!compareValues(mapValue, oper, Long.parseLong(value))) {
-                                            iterator.remove();
+                                if ((flag_end && a[a.length-2].equalsIgnoreCase("and")) || (!flag_end &&a[i+1].equalsIgnoreCase("and"))){
+                                    Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                    while (iterator.hasNext()) {
+                                        Map<String, Object> map = iterator.next();
+                                        Object mapValue = map.get("id");
+                                        if (value.startsWith("null")) {
+                                            if (!compareValues(mapValue, oper, Double.NaN)) {
+                                                iterator.remove();
+                                            }
+                                        } else {
+                                            if (!compareValues(mapValue, oper, Long.parseLong(value))) {
+                                                iterator.remove();
+                                            }
                                         }
                                     }
                                 }
+                                else if ((flag_end && a[a.length-2].equalsIgnoreCase("or")) || (!flag_end &&a[i+1].equalsIgnoreCase("or"))){
+                                    List<Map<String, Object>> compareList = new ArrayList<>();
+                                    for (Map<String, Object> map : buffList) {
+                                        Object mapValue = map.get("id");
+                                        if (value.startsWith("null")) {
+                                            if (!compareValues(mapValue, oper, Double.NaN)) {
+                                                compareList.add(map);
+                                            }
+                                        } else {
+                                            if (!compareValues(mapValue, oper, Long.parseLong(value))) {
+                                                compareList.add(map);
+                                            }
+                                        }
+                                    }
+                                    buffList.removeAll(compareList);
+                                    buffList.addAll(compareList.stream().filter(item -> !buffList.contains(item)).toList());
+                                    compareList.clear();
+                                }
+
                             }
 
                             else {
@@ -226,15 +246,6 @@ public class JavaSchoolStarter {
                                                 buffList.add(map);
                                             }
                                         }
-                                    }
-                                }
-                                if (buffList.isEmpty()){
-                                    for (int j = i; j<=value.length()-1; j++){
-                                        if (a[j].equalsIgnoreCase("or")) {
-                                            i=j;
-
-                                        }
-                                        if (j==value.length()-1) return new ArrayList<>();
                                     }
                                 }
                             }
@@ -273,13 +284,39 @@ public class JavaSchoolStarter {
                                 value="null";
                             }
                             if (buffList.size() > 0) {
-                                Iterator<Map<String, Object>> iterator = buffList.iterator();
-                                while (iterator.hasNext()) {
-                                    Map<String, Object> map = iterator.next();
-                                    Object mapValue = map.get("age");
-                                    if (!compareValues(mapValue, oper, Long.parseLong(value))) {
-                                        iterator.remove();
+                                if ((flag_end && a[a.length-2].equalsIgnoreCase("and")) || (!flag_end &&a[i+1].equalsIgnoreCase("and"))){
+                                    Iterator<Map<String, Object>> iterator = buffList.iterator();
+                                    while (iterator.hasNext()) {
+                                        Map<String, Object> map = iterator.next();
+                                        Object mapValue = map.get("age");
+                                        if (value.startsWith("null")) {
+                                            if (!compareValues(mapValue, oper, Double.NaN)) {
+                                                iterator.remove();
+                                            }
+                                        } else {
+                                            if (!compareValues(mapValue, oper, Long.parseLong(value))) {
+                                                iterator.remove();
+                                            }
+                                        }
                                     }
+                                }
+                                else if ((flag_end && a[a.length-2].equalsIgnoreCase("or")) || (!flag_end &&a[i+1].equalsIgnoreCase("or"))){
+                                    List<Map<String, Object>> compareList = new ArrayList<>();
+                                    for (Map<String, Object> map : buffList) {
+                                        Object mapValue = map.get("age");
+                                        if (value.startsWith("null")) {
+                                            if (!compareValues(mapValue, oper, Double.NaN)) {
+                                                compareList.add(map);
+                                            }
+                                        } else {
+                                            if (!compareValues(mapValue, oper, Long.parseLong(value))) {
+                                                compareList.add(map);
+                                            }
+                                        }
+                                    }
+                                    buffList.removeAll(compareList);
+                                    buffList.addAll(compareList.stream().filter(item -> !buffList.contains(item)).toList());
+                                    compareList.clear();
                                 }
                             }
 
@@ -301,28 +338,43 @@ public class JavaSchoolStarter {
                                         }
                                     }
                                 }
-                                if (buffList.isEmpty()){
-                                    for (int j = i; j<=value.length()-1; j++){
-                                        if (a[j].equalsIgnoreCase("or")) {
-                                            i=j;
-
-                                        }
-                                        if (j==value.length()-1) return new ArrayList<>();
-                                    }
-                                }
                             }
                             break;
                         case "cost":
                             if(value.length()>0) {
-                                if (buffList.size() > 0) {
+                                if ((flag_end && a[a.length-2].equalsIgnoreCase("and")) || (!flag_end &&a[i+1].equalsIgnoreCase("and"))){
                                     Iterator<Map<String, Object>> iterator = buffList.iterator();
                                     while (iterator.hasNext()) {
                                         Map<String, Object> map = iterator.next();
                                         Object mapValue = map.get("cost");
-                                        if (!compareValues(mapValue, oper, Double.parseDouble(value))) {
-                                            iterator.remove();
+                                        if (value.startsWith("null")) {
+                                            if (!compareValues(mapValue, oper, Double.NaN)) {
+                                                iterator.remove();
+                                            }
+                                        } else {
+                                            if (!compareValues(mapValue, oper, Double.parseDouble(value))) {
+                                                iterator.remove();
+                                            }
                                         }
                                     }
+                                }
+                                else if ((flag_end && a[a.length-2].equalsIgnoreCase("or")) || (!flag_end &&a[i+1].equalsIgnoreCase("or"))){
+                                    List<Map<String, Object>> compareList = new ArrayList<>();
+                                    for (Map<String, Object> map : buffList) {
+                                        Object mapValue = map.get("cost");
+                                        if (value.startsWith("null")) {
+                                            if (!compareValues(mapValue, oper, Double.NaN)) {
+                                                compareList.add(map);
+                                            }
+                                        } else {
+                                            if (!compareValues(mapValue, oper, Double.parseDouble(value))) {
+                                                compareList.add(map);
+                                            }
+                                        }
+                                    }
+                                    buffList.removeAll(compareList);
+                                    buffList.addAll(compareList.stream().filter(item -> !buffList.contains(item)).toList());
+                                    compareList.clear();
                                 }
                                 else {
                                     for (Map<String, Object> map : data) {
@@ -376,13 +428,9 @@ public class JavaSchoolStarter {
                             throw new IllegalArgumentException();
                     }
                 }
-                else if ((flag_end && a[a.length-2].equalsIgnoreCase("or")) || a[i+1].equalsIgnoreCase("or")) {
-                    if(flag_end) {
-                        i = a.length-1;
-                    } else if (i==a.length-3) {
-                        flag_end = true;
-                    }
-                }
+            }
+            else {
+
             }
         }
         return buffList;
