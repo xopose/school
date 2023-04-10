@@ -114,7 +114,58 @@ public class JavaSchoolStarter {
     }
 
     private List<Map<String, Object>> update(String[] tokens) throws Exception {
-        return null;
+        if (!tokens[1].equalsIgnoreCase("values")) {
+            throw new Exception("Invalid command syntax: " + String.join(" ", tokens[1]));
+        }
+        int from = 0;
+        for (int i=0; i<=tokens.length-1; i++){
+            if (tokens[i].equalsIgnoreCase("where")) from=i;
+        }
+        String[] values = String.join(" ", Arrays.copyOfRange(tokens, 2, from)).split(",");
+        for (String s : values) {
+            String sub;
+            String value;
+            int firstQuoteIndex = s.indexOf("'") + 1;
+            int secondQuoteIndex = s.indexOf("'", firstQuoteIndex + 1);
+            sub = s.substring(firstQuoteIndex, secondQuoteIndex);
+            if (sub.replace(" ", "").equalsIgnoreCase("lastName")) {
+                int thirdQuoteIndex = s.indexOf("'", secondQuoteIndex + 1);
+                int fourthQuoteIndex = s.lastIndexOf("'");
+                value = thirdQuoteIndex>1 & fourthQuoteIndex>1 ? s.substring(thirdQuoteIndex + 1, fourthQuoteIndex) : "";
+            } else {
+                value = s.substring(secondQuoteIndex + 2);
+            }
+            switch (sub.toLowerCase().replace(" ", "")){
+                case "id":
+                    if(value.length()>0) {
+                        if (!value.equalsIgnoreCase("null")) {
+                            String[] keys = Arrays.copyOfRange(tokens, from + 1, tokens.length);
+                            for (Map<String, Object> map : data) {
+                                for (Map<String, Object> tmpMap : where(keys)) {
+                                    if (map.keySet().containsAll(tmpMap.keySet()) && map.entrySet().containsAll(tmpMap.entrySet())) {
+                                        map.put("id", Long.parseLong(value));
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            String[] keys = Arrays.copyOfRange(tokens, from + 1, tokens.length);
+                            for (Map<String, Object> map : data) {
+                                for (Map<String, Object> tmpMap : where(keys)) {
+                                    if (map.keySet().containsAll(tmpMap.keySet()) && map.entrySet().containsAll(tmpMap.entrySet())) {
+                                        map.put("id", null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        //row.put("id", null);
+                    }
+                    break;
+            }
+        }
+        return data;
     }
 
     private List<Map<String, Object>> delete(String[] tokens) throws Exception {
@@ -486,9 +537,9 @@ public class JavaSchoolStarter {
                             throw new IllegalArgumentException();
                     }
                 }
-            }
-            else {
-
+                else {
+                    throw new IllegalArgumentException();
+                }
             }
         }
         return buffList;

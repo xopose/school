@@ -20,12 +20,13 @@ public class Main {
             //List<Map<String,Object>> result2 = starter.execute("UPDATE VALUES 'active'=false, 'cost'=10.1 where 'id'=3");
             //Получение всех данных из коллекции (т.е. в данном примере вернется 1 запись)
             //and 'lastName' like 'Федоров'
-            List<Map<String,Object>> result3 = starter.execute("SELECT WHERE 'id'>5 and 'lastname' like 'Фед%оров%' or 'id'=5");
+
+            List<Map<String,Object>> result32 = starter.execute("Update values 'id'=null where 'id'>5");
+//            for (Map<String, Object> stringObjectMap : result32) {
+//                System.out.println(stringObjectMap.keySet() + " " + stringObjectMap.values());
+//            }
+            List<Map<String,Object>> result3 = starter.execute("SELECT WHERE 'id'=null");
             for (Map<String, Object> stringObjectMap : result3) {
-                System.out.println(stringObjectMap.keySet() + " " + stringObjectMap.values());
-            }
-            List<Map<String,Object>> result32 = starter.execute("DELETE where 'id'>5");
-            for (Map<String, Object> stringObjectMap : result32) {
                 System.out.println(stringObjectMap.keySet() + " " + stringObjectMap.values());
             }
         }catch (Exception ex){
