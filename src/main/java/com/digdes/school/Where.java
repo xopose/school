@@ -363,16 +363,18 @@ public class Where {
                 double doubleValue = (double) longValue;
                 return compareValues(doubleValue, operator, value);
             } else if (mapValue instanceof Double) {
-                double doubleValue = (Double) mapValue;
-                return switch (operator) {
-                    case "=" -> doubleValue == value;
-                    case ">" -> doubleValue > value;
-                    case ">=" -> doubleValue >= value;
-                    case "<" -> doubleValue < value;
-                    case "<=" -> doubleValue <= value;
-                    case "!=" -> doubleValue != value;
-                    default -> false;
-                };
+                if(!(operator.equals("=") & Double.isNaN(value))) {
+                    double doubleValue = (Double) mapValue;
+                    return switch (operator) {
+                        case "=" -> doubleValue == value;
+                        case ">" -> doubleValue > value;
+                        case ">=" -> doubleValue >= value;
+                        case "<" -> doubleValue < value;
+                        case "<=" -> doubleValue <= value;
+                        case "!=" -> doubleValue != value;
+                        default -> false;
+                    };
+                }
             }
         }
         return false;

@@ -16,7 +16,9 @@ public class JavaSchoolStarter {
         if (tokens.length == 0) {
             throw new Exception("Empty command");
         }
-
+        for (int i = 0; i < tokens.length; i++) {
+            tokens[i] = tokens[i].replace("’", "'").replace("‘", "'");
+        }
         String command = tokens[0].toUpperCase();
         return switch (command) {
             case "SELECT" -> Select.select(tokens, data);
