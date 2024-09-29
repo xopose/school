@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Database implements iDatabase {
+public class Database implements IDatabase {
     private final Map<Long, Map<String, Object>> database = new ConcurrentHashMap<>();
 
     @Override

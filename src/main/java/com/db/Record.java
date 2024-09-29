@@ -2,7 +2,7 @@ package com.db;
 
 import java.util.Map;
 
-public class Record implements iRecord {
+public class Record implements IRecord {
     private final Map<String, Object> data;
 
     public Record(Map<String, Object> data) {

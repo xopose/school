@@ -2,7 +2,7 @@ package com.sql_processor;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
+//IramSaver
 public class Starter {
     private final Map<Long, Map<String, Object>> data = new ConcurrentHashMap<>();
     //Дефолтный конструктор
