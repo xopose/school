@@ -1,6 +1,6 @@
 package com.new_db.utils;
 
-import com.new_db.Database;
+import com.new_db.Table;
 import com.new_db.Record;
 import com.new_db.exceptions.RecordNotFoundException;
 
@@ -8,14 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InMemoryTransaction implements Transaction {
-    private Database database;
-    private Map<Long, Record> addedRecords;
-    private Map<Long, Record> updatedRecords;
-    private Map<Long, Record> deletedRecords;
+    private final Table table;
+    private final Map<Long, Record> addedRecords;
+    private final Map<Long, Record> updatedRecords;
+    private final Map<Long, Record> deletedRecords;
     private boolean active;
 
-    public InMemoryTransaction(Database database) {
-        this.database = database;
+    public InMemoryTransaction(Table table) {
+        this.table = table;
         this.addedRecords = new HashMap<>();
         this.updatedRecords = new HashMap<>();
         this.deletedRecords = new HashMap<>();
@@ -31,7 +31,7 @@ public class InMemoryTransaction implements Transaction {
     @Override
     public void updateRecord(long id, Record record) throws RecordNotFoundException {
         if (!active) throw new IllegalStateException("Transaction is not active");
-        Record existing = database.getRecord(id);
+        Record existing = table.getRecord(id);
         if (existing == null) {
             throw new RecordNotFoundException("Record with ID " + id + " not found.");
         }
@@ -41,7 +41,7 @@ public class InMemoryTransaction implements Transaction {
     @Override
     public boolean deleteRecord(long id) {
         if (!active) throw new IllegalStateException("Transaction is not active");
-        Record existing = database.getRecord(id);
+        Record existing = table.getRecord(id);
         if (existing != null) {
             deletedRecords.put(id, existing);
             return true;
@@ -54,19 +54,19 @@ public class InMemoryTransaction implements Transaction {
         if (!active) throw new IllegalStateException("Transaction is not active");
 
         for (Map.Entry<Long, Record> entry : addedRecords.entrySet()) {
-            database.addRecord(entry.getKey(), entry.getValue());
+            table.addRecord(entry.getKey(), entry.getValue());
         }
 
         for (Map.Entry<Long, Record> entry : updatedRecords.entrySet()) {
             try {
-                database.updateRecord(entry.getKey(), entry.getValue());
+                table.updateRecord(entry.getKey(), entry.getValue());
             } catch (RecordNotFoundException e) {
                 e.printStackTrace();
             }
         }
 
         for (Long id : deletedRecords.keySet()) {
-            database.deleteRecord(id);
+            table.deleteRecord(id);
         }
         active = false;
     }
