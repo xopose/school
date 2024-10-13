@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.db"},{"l":"com.helper"},{"l":"com.new_db"},{"l":"com.new_db.exceptions"},{"l":"com.new_db.utils"},{"l":"com.sql_processor"}];updateSearchResults();

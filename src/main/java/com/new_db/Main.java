@@ -1,15 +1,20 @@
 package com.new_db;
 
 import com.new_db.exceptions.CantCreateDatabaseException;
+import com.new_db.exceptions.IncorrectCommandException;
 import com.new_db.exceptions.TableNotFoundException;
+import com.new_db.sql_processor.Starter;
 import com.new_db.utils.InMemoryCriteria;
 import com.new_db.utils.Transaction;
 
+import java.util.ArrayList;
+
 
 public class Main {
-    public static void main(String[] args) throws TableNotFoundException, CantCreateDatabaseException {
+    public static void main(String[] args) throws TableNotFoundException, CantCreateDatabaseException, IncorrectCommandException {
         Database database = new InMemoryDatabase();
-        database.createTable("iHateDatabase");
+        Starter starter = new Starter(database);
+        starter.execute("CREATE table iHateDatabase");
         Table table = database.getTable("iHateDatabase");
 
         // Работа с записью
@@ -23,14 +28,18 @@ public class Main {
 
         table.addRecord(table.nextRecordId(), record1);
         table.addRecord(table.nextRecordId(), record2);
-
+        starter.execute("Select name, age FROM iHateDatabase Where age=1");
+        System.out.println("-".repeat(100));
         table.createIndex("name");
 
         InMemoryCriteria criteria = new InMemoryCriteria();
         criteria.equals("name", "Alice");
 
         System.out.println("Результаты запроса:");
-        table.queryRecords(criteria).forEach(r -> System.out.println(r.serialize()));
+        starter.execute("Select * from iHateDatabase");
+        System.out.println("-".repeat(100));
+
+        table.queryRecords(criteria).forEach(r -> System.out.println(r.serialize(new ArrayList<>())));
 
         System.out.println("Сумма возрастов: " + table.sumField("age"));
         System.out.println("Средний возраст: " + table.averageField("age"));
@@ -46,6 +55,6 @@ public class Main {
         System.out.println("После транзакции:");
         System.out.println("Сумма возрастов: " + table.sumField("age"));
         System.out.println("Средний возраст: " + table.averageField("age"));
-        table.queryRecords(new InMemoryCriteria()).forEach(r -> System.out.println(r.serialize()));
+        table.queryRecords(new InMemoryCriteria()).forEach(r -> System.out.println(r.serialize(new ArrayList<>())));
     }
 }

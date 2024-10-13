@@ -8,10 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class InMemoryRecord implements Record {
     private Map<String, Field> fields;
@@ -78,12 +75,14 @@ public class InMemoryRecord implements Record {
     }
 
     @Override
-    public String serialize() {
+    public String serialize(List<String> recordFields) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> fieldMap = new HashMap<>();
             for (Map.Entry<String, Field> entry : fields.entrySet()) {
-                fieldMap.put(entry.getKey(), entry.getValue().getValue());
+                if(recordFields.contains(entry.getKey()) || recordFields.isEmpty() || recordFields.contains("*")){
+                    fieldMap.put(entry.getKey(), entry.getValue().getValue());
+                }
             }
             return mapper.writeValueAsString(fieldMap);
         } catch (JsonProcessingException e) {

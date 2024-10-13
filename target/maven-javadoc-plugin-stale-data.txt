@@ -1,0 +1,109 @@
+-J-Duser.language=
+-J-Duser.country=
+@options
+@packages
+-classpath
+'C:/Users/lazar/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2.jar;C:/Users/lazar/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.2/jackson-annotations-2.15.2.jar;C:/Users/lazar/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.2/jackson-core-2.15.2.jar;C:/Users/lazar/.m2/repository/org/apache/maven/plugins/maven-javadoc-plugin/3.10.0/maven-javadoc-plugin-3.10.0.jar;C:/Users/lazar/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.4.1/maven-resolver-util-1.4.1.jar;C:/Users/lazar/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.4.1/maven-resolver-api-1.4.1.jar;C:/Users/lazar/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar;C:/Users/lazar/.m2/repository/org/apache/maven/reporting/maven-reporting-api/4.0.0-M12/maven-reporting-api-4.0.0-M12.jar;C:/Users/lazar/.m2/repository/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar;C:/Users/lazar/.m2/repository/org/apache/maven/shared/maven-invoker/3.3.0/maven-invoker-3.3.0.jar;C:/Users/lazar/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar;C:/Users/lazar/.m2/repository/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar;C:/Users/lazar/.m2/repository/org/apache/maven/shared/maven-common-artifact-filters/3.4.0/maven-common-artifact-filters-3.4.0.jar;C:/Users/lazar/.m2/repository/org/apache/maven/doxia/doxia-sink-api/2.0.0-M12/doxia-sink-api-2.0.0-M12.jar;C:/Users/lazar/.m2/repository/org/apache/maven/doxia/doxia-site-renderer/2.0.0-M19/doxia-site-renderer-2.0.0-M19.jar;C:/Users/lazar/.m2/repository/org/apache/maven/doxia/doxia-core/2.0.0-M12/doxia-core-2.0.0-M12.jar;C:/Users/lazar/.m2/repository/org/apache/maven/doxia/doxia-site-model/2.0.0-M19/doxia-site-model-2.0.0-M19.jar;C:/Users/lazar/.m2/repository/org/apache/maven/doxia/doxia-skin-model/2.0.0-M19/doxia-skin-model-2.0.0-M19.jar;C:/Users/lazar/.m2/repository/org/apache/maven/doxia/doxia-module-xhtml5/2.0.0-M12/doxia-module-xhtml5-2.0.0-M12.jar;C:/Users/lazar/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M2/org.eclipse.sisu.plexus-0.9.0.M2.jar;C:/Users/lazar/.m2/repository/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2.jar;C:/Users/lazar/.m2/repository/javax/enterprise/cdi-api/1.2/cdi-api-1.2.jar;C:/Users/lazar/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M2/org.eclipse.sisu.inject-0.9.0.M2.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.1.0/plexus-component-annotations-2.1.0.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-velocity/2.1.0/plexus-velocity-2.1.0.jar;C:/Users/lazar/.m2/repository/org/apache/velocity/velocity-engine-core/2.3/velocity-engine-core-2.3.jar;C:/Users/lazar/.m2/repository/org/apache/velocity/tools/velocity-tools-generic/3.1/velocity-tools-generic-3.1.jar;C:/Users/lazar/.m2/repository/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar;C:/Users/lazar/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar;C:/Users/lazar/.m2/repository/org/apache/commons/commons-digester3/3.2/commons-digester3-3.2.jar;C:/Users/lazar/.m2/repository/com/github/cliftonlabs/json-simple/3.0.2/json-simple-3.0.2.jar;C:/Users/lazar/.m2/repository/org/apache/maven/doxia/doxia-integration-tools/2.0.0-M19/doxia-integration-tools-2.0.0-M19.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-i18n/1.0-beta-10/plexus-i18n-1.0-beta-10.jar;C:/Users/lazar/.m2/repository/org/apache/maven/wagon/wagon-provider-api/3.5.3/wagon-provider-api-3.5.3.jar;C:/Users/lazar/.m2/repository/org/apache/commons/commons-lang3/3.16.0/commons-lang3-3.16.0.jar;C:/Users/lazar/.m2/repository/org/apache/commons/commons-text/1.12.0/commons-text-1.12.0.jar;C:/Users/lazar/.m2/repository/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.jar;C:/Users/lazar/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar;C:/Users/lazar/.m2/repository/commons-codec/commons-codec/1.11/commons-codec-1.11.jar;C:/Users/lazar/.m2/repository/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.jar;C:/Users/lazar/.m2/repository/com/thoughtworks/qdox/qdox/2.1.0/qdox-2.1.0.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-java/1.2.0/plexus-java-1.2.0.jar;C:/Users/lazar/.m2/repository/org/ow2/asm/asm/9.6/asm-9.6.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-xml/3.0.1/plexus-xml-3.0.1.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-io/3.5.0/plexus-io-3.5.0.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-archiver/4.10.0/plexus-archiver-4.10.0.jar;C:/Users/lazar/.m2/repository/org/apache/commons/commons-compress/1.26.2/commons-compress-1.26.2.jar;C:/Users/lazar/.m2/repository/io/airlift/aircompressor/0.27/aircompressor-0.27.jar;C:/Users/lazar/.m2/repository/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar;C:/Users/lazar/.m2/repository/org/codehaus/plexus/plexus-interactivity-api/1.3/plexus-interactivity-api-1.3.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'19'
+-sourcepath
+'C:/Users/lazar/Desktop/school-master/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2024. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/lazar/Desktop/school-master/target/reports/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'school 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'school 1.0-SNAPSHOT API'
+com.db
+com.helper
+com.new_db
+com.new_db.exceptions
+com.new_db.utils
+com.sql_processor
+C:\Users\lazar\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.15.2\jackson-databind-2.15.2.jar = 1690654136444
+C:\Users\lazar\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.15.2\jackson-annotations-2.15.2.jar = 1690654136360
+C:\Users\lazar\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.15.2\jackson-core-2.15.2.jar = 1690654136501
+C:\Users\lazar\.m2\repository\org\apache\maven\plugins\maven-javadoc-plugin\3.10.0\maven-javadoc-plugin-3.10.0.jar = 1724345728000
+C:\Users\lazar\.m2\repository\org\apache\maven\resolver\maven-resolver-util\1.4.1\maven-resolver-util-1.4.1.jar = 1565863748000
+C:\Users\lazar\.m2\repository\org\apache\maven\resolver\maven-resolver-api\1.4.1\maven-resolver-api-1.4.1.jar = 1565863676000
+C:\Users\lazar\.m2\repository\javax\inject\javax.inject\1\javax.inject-1.jar = 1668704509423
+C:\Users\lazar\.m2\repository\org\apache\maven\reporting\maven-reporting-api\4.0.0-M12\maven-reporting-api-4.0.0-M12.jar = 1715977120000
+C:\Users\lazar\.m2\repository\org\apache\maven\maven-archiver\3.6.2\maven-archiver-3.6.2.jar = 1711319482000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-interpolation\1.27\plexus-interpolation-1.27.jar = 1703378722000
+C:\Users\lazar\.m2\repository\org\apache\maven\shared\maven-invoker\3.3.0\maven-invoker-3.3.0.jar = 1715114993000
+C:\Users\lazar\.m2\repository\org\apache\maven\shared\maven-shared-utils\3.4.2\maven-shared-utils-3.4.2.jar = 1683838316000
+C:\Users\lazar\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar = 1670147239266
+C:\Users\lazar\.m2\repository\org\apache\maven\shared\maven-common-artifact-filters\3.4.0\maven-common-artifact-filters-3.4.0.jar = 1717598631000
+C:\Users\lazar\.m2\repository\org\apache\maven\doxia\doxia-sink-api\2.0.0-M12\doxia-sink-api-2.0.0-M12.jar = 1715975681000
+C:\Users\lazar\.m2\repository\org\apache\maven\doxia\doxia-site-renderer\2.0.0-M19\doxia-site-renderer-2.0.0-M19.jar = 1716406638000
+C:\Users\lazar\.m2\repository\org\apache\maven\doxia\doxia-core\2.0.0-M12\doxia-core-2.0.0-M12.jar = 1715975702000
+C:\Users\lazar\.m2\repository\org\apache\maven\doxia\doxia-site-model\2.0.0-M19\doxia-site-model-2.0.0-M19.jar = 1716406595000
+C:\Users\lazar\.m2\repository\org\apache\maven\doxia\doxia-skin-model\2.0.0-M19\doxia-skin-model-2.0.0-M19.jar = 1716406601000
+C:\Users\lazar\.m2\repository\org\apache\maven\doxia\doxia-module-xhtml5\2.0.0-M12\doxia-module-xhtml5-2.0.0-M12.jar = 1715975769000
+C:\Users\lazar\.m2\repository\org\eclipse\sisu\org.eclipse.sisu.plexus\0.9.0.M2\org.eclipse.sisu.plexus-0.9.0.M2.jar = 1683328408000
+C:\Users\lazar\.m2\repository\javax\annotation\javax.annotation-api\1.2\javax.annotation-api-1.2.jar = 1683368153375
+C:\Users\lazar\.m2\repository\javax\enterprise\cdi-api\1.2\cdi-api-1.2.jar = 1683368153425
+C:\Users\lazar\.m2\repository\org\eclipse\sisu\org.eclipse.sisu.inject\0.9.0.M2\org.eclipse.sisu.inject-0.9.0.M2.jar = 1683327942000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-component-annotations\2.1.0\plexus-component-annotations-2.1.0.jar = 1571826583000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-classworlds\2.6.0\plexus-classworlds-2.6.0.jar = 1669459202479
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-velocity\2.1.0\plexus-velocity-2.1.0.jar = 1703370366000
+C:\Users\lazar\.m2\repository\org\apache\velocity\velocity-engine-core\2.3\velocity-engine-core-2.3.jar = 1614773760000
+C:\Users\lazar\.m2\repository\org\apache\velocity\tools\velocity-tools-generic\3.1\velocity-tools-generic-3.1.jar = 1614457239000
+C:\Users\lazar\.m2\repository\commons-beanutils\commons-beanutils\1.9.4\commons-beanutils-1.9.4.jar = 1683368154088
+C:\Users\lazar\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar = 1673868681679
+C:\Users\lazar\.m2\repository\org\apache\commons\commons-digester3\3.2\commons-digester3-3.2.jar = 1323529092000
+C:\Users\lazar\.m2\repository\com\github\cliftonlabs\json-simple\3.0.2\json-simple-3.0.2.jar = 1516823861000
+C:\Users\lazar\.m2\repository\org\apache\maven\doxia\doxia-integration-tools\2.0.0-M19\doxia-integration-tools-2.0.0-M19.jar = 1716406621000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-i18n\1.0-beta-10\plexus-i18n-1.0-beta-10.jar = 1673868680322
+C:\Users\lazar\.m2\repository\org\apache\maven\wagon\wagon-provider-api\3.5.3\wagon-provider-api-3.5.3.jar = 1671398364000
+C:\Users\lazar\.m2\repository\org\apache\commons\commons-lang3\3.16.0\commons-lang3-3.16.0.jar = 1722515068000
+C:\Users\lazar\.m2\repository\org\apache\commons\commons-text\1.12.0\commons-text-1.12.0.jar = 1713015297000
+C:\Users\lazar\.m2\repository\org\apache\httpcomponents\httpclient\4.5.14\httpclient-4.5.14.jar = 1677947481884
+C:\Users\lazar\.m2\repository\commons-logging\commons-logging\1.2\commons-logging-1.2.jar = 1669459202332
+C:\Users\lazar\.m2\repository\commons-codec\commons-codec\1.11\commons-codec-1.11.jar = 1669459202399
+C:\Users\lazar\.m2\repository\org\apache\httpcomponents\httpcore\4.4.16\httpcore-4.4.16.jar = 1677947481868
+C:\Users\lazar\.m2\repository\com\thoughtworks\qdox\qdox\2.1.0\qdox-2.1.0.jar = 1706556487000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-java\1.2.0\plexus-java-1.2.0.jar = 1697463402000
+C:\Users\lazar\.m2\repository\org\ow2\asm\asm\9.6\asm-9.6.jar = 1696072714000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-utils\4.0.1\plexus-utils-4.0.1.jar = 1712999264000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-xml\3.0.1\plexus-xml-3.0.1.jar = 1716326051000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-io\3.5.0\plexus-io-3.5.0.jar = 1720096127000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-archiver\4.10.0\plexus-archiver-4.10.0.jar = 1720102892000
+C:\Users\lazar\.m2\repository\org\apache\commons\commons-compress\1.26.2\commons-compress-1.26.2.jar = 1716046659000
+C:\Users\lazar\.m2\repository\io\airlift\aircompressor\0.27\aircompressor-0.27.jar = 1716239725000
+C:\Users\lazar\.m2\repository\commons-io\commons-io\2.16.1\commons-io-2.16.1.jar = 1712280333000
+C:\Users\lazar\.m2\repository\org\codehaus\plexus\plexus-interactivity-api\1.3\plexus-interactivity-api-1.3.jar = 1707065705000
+C:\Users\lazar\Desktop\school-master\src\main\java = 1727628960621
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\allclasses-index.html = 1727634461687
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\allpackages-index.html = 1727634461688
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\copy.svg = 1727634461709
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\element-list = 1727634461585
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\help-doc.html = 1727634461706
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\index-all.html = 1727634461702
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\index.html = 1727634461677
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\jquery-ui.overrides.css = 1727634461719
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\member-search-index.js = 1727634461691
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\module-search-index.js = 1727634461689
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\overview-summary.html = 1727634461704
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\overview-tree.html = 1727634461675
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\package-search-index.js = 1727634461689
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\script.js = 1727634461709
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\search-page.js = 1727634461713
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\search.html = 1727634461703
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\search.js = 1727634461712
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\serialized-form.html = 1727634461617
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\stylesheet.css = 1727634461708
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\tag-search-index.js = 1727634461692
+C:\Users\lazar\Desktop\school-master\target\reports\apidocs\type-search-index.js = 1727634461691

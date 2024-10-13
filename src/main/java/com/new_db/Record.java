@@ -4,9 +4,7 @@ import com.new_db.exceptions.SerializationException;
 import com.new_db.utils.ComparisonCriteria;
 import com.new_db.utils.ComparisonResult;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public interface Record {
 
@@ -82,7 +80,7 @@ public interface Record {
      *
      * @return Строковое представление записи.
      */
-    String serialize();
+    String serialize(List<String> recordFields);
 
     /**
      * Десериализует запись из строки.
