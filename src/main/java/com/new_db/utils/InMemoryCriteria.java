@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.List;
 
 public class InMemoryCriteria implements Criteria {
-    private List<Condition> conditions;
-    private List<LogicalOperator> logicalOperators;
+    private final List<Condition> conditions;
+    private final List<LogicalOperator> logicalOperators;
 
     public InMemoryCriteria() {
         conditions = new ArrayList<>();
@@ -82,7 +82,7 @@ public class InMemoryCriteria implements Criteria {
         for (int i = 0; i < conditions.size(); i++) {
             Condition condition = conditions.get(i);
             boolean conditionResult = condition.evaluate(record);
-            if (i > 0) {
+            if (i > 0 && logicalOperators.size() > i - 1) {
                 LogicalOperator operator = logicalOperators.get(i - 1);
                 if (operator == LogicalOperator.AND) {
                     result = result && conditionResult;

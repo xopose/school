@@ -3,7 +3,6 @@ package com.new_db.sql_processor;
 import com.new_db.Database;
 import com.new_db.exceptions.CantCreateDatabaseException;
 import com.new_db.exceptions.IncorrectCommandException;
-import com.new_db.exceptions.TableNotFoundException;
 
 public class Starter {
     Database database;
@@ -19,7 +18,6 @@ public class Starter {
         for (int i = 0; i < tokens.length; i++) {
             tokens[i] = tokens[i].replace("’", "'").replace("‘", "'");
         }
-        if(tokens.length<1) throw new IncorrectCommandException("Empty command");
         String command = tokens[0].toUpperCase();
         switch (command) {
             case "SELECT" -> Select.select(tokens, database);

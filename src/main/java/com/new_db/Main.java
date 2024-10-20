@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 
 public class Main {
-    public static void main(String[] args) throws TableNotFoundException, CantCreateDatabaseException, IncorrectCommandException {
+    public static void main(String[] args) throws Exception {
         Database database = new InMemoryDatabase();
         Starter starter = new Starter(database);
         starter.execute("CREATE table iHateDatabase");
@@ -28,13 +28,12 @@ public class Main {
 
         table.addRecord(table.nextRecordId(), record1);
         table.addRecord(table.nextRecordId(), record2);
-        starter.execute("Select name, age FROM iHateDatabase Where age=1");
+        starter.execute("Select name FROM iHateDatabase Where name=Bob age>24");
         System.out.println("-".repeat(100));
         table.createIndex("name");
 
         InMemoryCriteria criteria = new InMemoryCriteria();
         criteria.equals("name", "Alice");
-
         System.out.println("Результаты запроса:");
         starter.execute("Select * from iHateDatabase");
         System.out.println("-".repeat(100));

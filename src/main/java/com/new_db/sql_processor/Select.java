@@ -16,7 +16,7 @@ public class Select {
             QueryResult result = parseQuery(tokenList);
             try{
                 Table table = database.getTable(result.getTableName());
-                InMemoryCriteria criteria = new InMemoryCriteria();
+                InMemoryCriteria criteria = getInMemoryCriteria(result);
                 table.queryRecords(criteria).forEach(r -> System.out.println(r.serialize(result.getColumns())));
             } catch (TableNotFoundException e) {
                 throw new TableNotFoundException("Table " + result.getTableName() + " does not exists");
@@ -24,6 +24,30 @@ public class Select {
         } catch (IllegalArgumentException | TableNotFoundException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    private static InMemoryCriteria getInMemoryCriteria(QueryResult result) {
+        InMemoryCriteria criteria = new InMemoryCriteria();
+        for (String oper: result.getWhereConditions()){
+            String[] conditionParts = oper.split("(?<=[<>=])|(?=[<>=])");
+            if (conditionParts.length == 3) {
+                String column = conditionParts[0].trim();
+                String operator = conditionParts[1].trim();
+                String value = conditionParts[2].trim();
+                switch (operator){
+                    case "=":
+                        criteria.and(new InMemoryCriteria().equals(column, value));
+                        break;
+                    case ">":
+                        criteria.and(new InMemoryCriteria().greaterThan(column, Integer.parseInt(value)));
+                        break;
+                    case "<":
+                        criteria.and(new InMemoryCriteria().lessThan(column, Integer.parseInt(value)));
+                        break;
+                }
+            }
+        }
+        return criteria;
     }
 
     public static class QueryResult {
