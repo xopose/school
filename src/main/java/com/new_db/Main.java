@@ -29,6 +29,7 @@ public class Main {
         table.addRecord(table.nextRecordId(), record1);
         table.addRecord(table.nextRecordId(), record2);
         starter.execute("Select name FROM iHateDatabase Where name=Bob age>24");
+        starter.execute("Delete FROM iHateDatabase Where name=Bob age>24");
         System.out.println("-".repeat(100));
         table.createIndex("name");
 
@@ -38,8 +39,14 @@ public class Main {
         starter.execute("Select * from iHateDatabase");
         System.out.println("-".repeat(100));
 
-        table.queryRecords(criteria).forEach(r -> System.out.println(r.serialize(new ArrayList<>())));
-
+        for (Object[] entry : table.queryRecords(criteria)) {
+            long id = (long)entry[0];
+            Record record = (Record)entry[1];
+            System.out.println("Index: " + id + ", Record: ");
+            for(Field field: record.getFields().values()){
+                System.out.println("\t" +field.getName()+ " " +field.getValue());
+            }
+        }
         System.out.println("Сумма возрастов: " + table.sumField("age"));
         System.out.println("Средний возраст: " + table.averageField("age"));
 
@@ -54,6 +61,13 @@ public class Main {
         System.out.println("После транзакции:");
         System.out.println("Сумма возрастов: " + table.sumField("age"));
         System.out.println("Средний возраст: " + table.averageField("age"));
-        table.queryRecords(new InMemoryCriteria()).forEach(r -> System.out.println(r.serialize(new ArrayList<>())));
+        for (Object[] entry : table.queryRecords(criteria)) {
+            long id = (long)entry[0];
+            Record record = (Record)entry[1];
+            System.out.println("Index: " + id + ", Record: ");
+            for(Field field: record.getFields().values()){
+                System.out.println("\t" +field.getName()+ " " +field.getValue());
+            }
+        }
     }
 }

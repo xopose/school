@@ -1,6 +1,8 @@
 package com.new_db.sql_processor;
 
 import com.new_db.Database;
+import com.new_db.Field;
+import com.new_db.Record;
 import com.new_db.Table;
 import com.new_db.exceptions.TableNotFoundException;
 import com.new_db.utils.InMemoryCriteria;
@@ -8,6 +10,9 @@ import com.new_db.utils.InMemoryCriteria;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import static com.helper.Helper.getInMemoryCriteria;
 
 public class Select {
     public static void select(String[] tokens, Database database) {
@@ -17,7 +22,14 @@ public class Select {
             try{
                 Table table = database.getTable(result.getTableName());
                 InMemoryCriteria criteria = getInMemoryCriteria(result);
-                table.queryRecords(criteria).forEach(r -> System.out.println(r.serialize(result.getColumns())));
+                for (Object[] entry : table.queryRecords(criteria)) {
+                    long id = (long)entry[0];
+                    Record record = (Record)entry[1];
+                    System.out.println("Index: " + id + ", Record: ");
+                    for(Field field: record.getFields().values()){
+                        System.out.println("\t" +field.getName()+ " " +field.getValue());
+                    }
+                }
             } catch (TableNotFoundException e) {
                 throw new TableNotFoundException("Table " + result.getTableName() + " does not exists");
             }
@@ -26,34 +38,10 @@ public class Select {
         }
     }
 
-    private static InMemoryCriteria getInMemoryCriteria(QueryResult result) {
-        InMemoryCriteria criteria = new InMemoryCriteria();
-        for (String oper: result.getWhereConditions()){
-            String[] conditionParts = oper.split("(?<=[<>=])|(?=[<>=])");
-            if (conditionParts.length == 3) {
-                String column = conditionParts[0].trim();
-                String operator = conditionParts[1].trim();
-                String value = conditionParts[2].trim();
-                switch (operator){
-                    case "=":
-                        criteria.and(new InMemoryCriteria().equals(column, value));
-                        break;
-                    case ">":
-                        criteria.and(new InMemoryCriteria().greaterThan(column, Integer.parseInt(value)));
-                        break;
-                    case "<":
-                        criteria.and(new InMemoryCriteria().lessThan(column, Integer.parseInt(value)));
-                        break;
-                }
-            }
-        }
-        return criteria;
-    }
-
     public static class QueryResult {
-        private List<String> columns;
-        private String tableName;
-        private List<String> whereConditions;
+        private final List<String> columns;
+        private final String tableName;
+        private final List<String> whereConditions;
 
         public QueryResult(List<String> columns, String tableName, List<String> whereConditions) {
             this.columns = columns;

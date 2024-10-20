@@ -1,5 +1,8 @@
 package com.helper;
 
+import com.new_db.sql_processor.Select;
+import com.new_db.utils.InMemoryCriteria;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -57,4 +60,27 @@ public class Helper {
         return 0;
     }
 
+    public static InMemoryCriteria getInMemoryCriteria(Select.QueryResult result) {
+        InMemoryCriteria criteria = new InMemoryCriteria();
+        for (String oper: result.getWhereConditions()){
+            String[] conditionParts = oper.split("(?<=[<>=])|(?=[<>=])");
+            if (conditionParts.length == 3) {
+                String column = conditionParts[0].trim();
+                String operator = conditionParts[1].trim();
+                String value = conditionParts[2].trim();
+                switch (operator){
+                    case "=":
+                        criteria.and(new InMemoryCriteria().equals(column, value));
+                        break;
+                    case ">":
+                        criteria.and(new InMemoryCriteria().greaterThan(column, Integer.parseInt(value)));
+                        break;
+                    case "<":
+                        criteria.and(new InMemoryCriteria().lessThan(column, Integer.parseInt(value)));
+                        break;
+                }
+            }
+        }
+        return criteria;
+    }
 }

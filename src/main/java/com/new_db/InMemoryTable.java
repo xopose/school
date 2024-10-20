@@ -3,7 +3,9 @@ package com.new_db;
 import com.new_db.exceptions.RecordNotFoundException;
 import com.new_db.utils.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -46,7 +48,9 @@ public class InMemoryTable implements Table {
     }
 
     @Override
-    public Collection<Record> queryRecords(Criteria criteria) {
+    public List<Object[]> queryRecords(Criteria criteria) {
+        List<Object[]> result = new ArrayList<>();
+
         if (criteria instanceof InMemoryCriteria) {
             InMemoryCriteria inMemCriteria = (InMemoryCriteria) criteria;
             for (InMemoryCriteria.Condition condition : inMemCriteria.getConditions()) {
@@ -55,16 +59,23 @@ public class InMemoryTable implements Table {
                         indexes.containsKey(condition.getFieldName())) {
                     Index index = indexes.get(condition.getFieldName());
                     Collection<Record> indexedRecords = index.search(condition.getValue());
-                    return indexedRecords.stream()
-                            .filter(criteria::matches)
-                            .collect(Collectors.toList());
+
+                    // Собираем индекс и запись в массивы и добавляем в результат
+                    records.entrySet().stream()
+                            .filter(entry -> indexedRecords.contains(entry.getValue())
+                                    && criteria.matches(entry.getValue()))
+                            .forEach(entry -> result.add(new Object[]{entry.getKey(), entry.getValue()}));
+                    return result;
                 }
             }
         }
-        // Если индексы не применимы, выполнить полный перебор
-        return records.values().stream()
-                .filter(criteria::matches)
-                .collect(Collectors.toList());
+
+        // Если индексы не применимы, выполнить полный перебор и вернуть записи с их индексами
+        records.entrySet().stream()
+                .filter(entry -> criteria.matches(entry.getValue()))
+                .forEach(entry -> result.add(new Object[]{entry.getKey(), entry.getValue()}));
+
+        return result;
     }
 
     @Override

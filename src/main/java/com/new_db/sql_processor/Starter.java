@@ -23,7 +23,7 @@ public class Starter {
             case "SELECT" -> Select.select(tokens, database);
 //          case "INSERT" -> Insert.insert(tokens, database);
 //          case "UPDATE" -> Update.update(tokens, database);
-//          case "DELETE" -> Delete.delete(tokens, database);
+            case "DELETE" -> Delete.delete(tokens, database);
             case "CREATE" -> Create.create(tokens, database);
             default -> throw new IncorrectCommandException("Unknown command: " + command);
         };

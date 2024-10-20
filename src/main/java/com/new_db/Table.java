@@ -6,6 +6,8 @@ import com.new_db.utils.Index;
 import com.new_db.utils.Transaction;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public interface Table {
 
@@ -48,7 +50,7 @@ public interface Table {
      * @param criteria Объект критериев запроса.
      * @return Коллекция записей, соответствующих критериям.
      */
-    Collection<Record> queryRecords(Criteria criteria);
+    public List<Object[]> queryRecords(Criteria criteria);
 
     /**
      * Возвращает сумму значений указанного числового поля по всем записям.
