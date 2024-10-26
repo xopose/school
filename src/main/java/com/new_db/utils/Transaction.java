@@ -7,11 +7,9 @@ public interface Transaction {
 
     /**
      * Выполняет добавление записи в рамках транзакции.
-     *
-     * @param id     Идентификатор записи.
      * @param record Объект записи.
      */
-    void addRecord(long id, Record record);
+    void addRecord(Record record);
 
     /**
      * Выполняет обновление записи в рамках транзакции.

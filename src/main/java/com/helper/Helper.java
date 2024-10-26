@@ -1,10 +1,9 @@
 package com.helper;
 
-import com.new_db.sql_processor.Select;
 import com.new_db.utils.InMemoryCriteria;
+import com.new_db.utils.QueryTokenParser;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Helper {
     public static void printFormatedTable(Map<Long, Map<String, Object>> data){
@@ -60,9 +59,9 @@ public class Helper {
         return 0;
     }
 
-    public static InMemoryCriteria getInMemoryCriteria(Select.QueryResult result) {
+    public static InMemoryCriteria getInMemoryCriteria(QueryTokenParser result) {
         InMemoryCriteria criteria = new InMemoryCriteria();
-        for (String oper: result.getWhereConditions()){
+        for (String oper: result.whereConditions()){
             String[] conditionParts = oper.split("(?<=[<>=])|(?=[<>=])");
             if (conditionParts.length == 3) {
                 String column = conditionParts[0].trim();

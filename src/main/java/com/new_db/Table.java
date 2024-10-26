@@ -12,12 +12,18 @@ import java.util.Map;
 public interface Table {
 
     /**
-     * Добавляет новую запись в базу данных.
+     * Добавляет новую запись в базу данных по ее id.
      *
      * @param id     Идентификатор записи.
      * @param record Объект записи.
      */
-    void addRecord(long id, Record record);
+    void addRecordById(Long id, Record record);
+    /**
+     * Добавляет новую запись в базу данных.
+     *
+     * @param record Объект записи.
+     */
+    void addRecord(Record record);
 
     /**
      * Получает запись по ее идентификатору.

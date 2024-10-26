@@ -35,6 +35,16 @@ public class InMemoryField implements Field {
     public Number asNumber() {
         if (value instanceof Number) {
             return (Number) value;
+        } else if (value instanceof String) {
+            try {
+                return Integer.parseInt((String) value);
+            } catch (NumberFormatException e1) {
+                try {
+                    return Double.parseDouble((String) value);
+                } catch (NumberFormatException e2) {
+                    return null;
+                }
+            }
         }
         return null;
     }

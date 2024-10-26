@@ -3,21 +3,23 @@ package com.new_db;
 import com.new_db.exceptions.RecordNotFoundException;
 import com.new_db.utils.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 public class InMemoryTable implements Table {
-    private Map<Long, Record> records = new ConcurrentHashMap<>();
-    private Map<String, Index> indexes = new ConcurrentHashMap<>();
-    private AtomicLong idGenerator = new AtomicLong(0);
+    private final Map<Long, Record> records = new ConcurrentHashMap<>();
+    private final Map<String, Index> indexes = new ConcurrentHashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(0);
+    private final Stack<Long> freeIds = new Stack<>();
+    @Override
+    public void addRecord(Record record) {
+        records.put(nextRecordId(), record);
+        indexes.values().forEach(index -> index.indexRecord(record));
+    }
 
     @Override
-    public void addRecord(long id, Record record) {
+    public void addRecordById(Long id,Record record) {
         records.put(id, record);
         indexes.values().forEach(index -> index.indexRecord(record));
     }
@@ -41,6 +43,7 @@ public class InMemoryTable implements Table {
     public boolean deleteRecord(long id) {
         Record removed = records.remove(id);
         if (removed != null) {
+            freeIds.add(id);
             indexes.values().forEach(index -> index.removeRecord(removed));
             return true;
         }
@@ -108,6 +111,8 @@ public class InMemoryTable implements Table {
 
     @Override
     public long nextRecordId() {
+        if(!freeIds.isEmpty())
+            return freeIds.pop();
         return records.size()+1;
     }
 

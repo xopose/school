@@ -23,9 +23,9 @@ public class InMemoryTransaction implements Transaction {
     }
 
     @Override
-    public void addRecord(long id, Record record) {
+    public void addRecord(Record record) {
         if (!active) throw new IllegalStateException("Transaction is not active");
-        addedRecords.put(id, record);
+        addedRecords.put(table.nextRecordId(), record);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class InMemoryTransaction implements Transaction {
         if (!active) throw new IllegalStateException("Transaction is not active");
 
         for (Map.Entry<Long, Record> entry : addedRecords.entrySet()) {
-            table.addRecord(entry.getKey(), entry.getValue());
+            table.addRecordById(entry.getKey(), entry.getValue());
         }
 
         for (Map.Entry<Long, Record> entry : updatedRecords.entrySet()) {

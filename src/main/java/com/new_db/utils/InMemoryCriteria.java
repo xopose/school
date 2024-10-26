@@ -158,12 +158,21 @@ public class InMemoryCriteria implements Criteria {
                 case NOT_EQUALS:
                     return !value.equals(fieldValue);
                 case GREATER_THAN:
-                    if (fieldValue instanceof Comparable && value instanceof Comparable) {
+                    if (fieldValue instanceof Integer && value instanceof Integer) {
+                        return (Integer) fieldValue > (Integer) value;
+                    } else if (fieldValue instanceof String && value instanceof String) {
+                        return ((String) fieldValue).compareTo((String) value) > 0;
+                    } else if (fieldValue instanceof Comparable && value instanceof Comparable && fieldValue.getClass().equals(value.getClass())) {
                         return ((Comparable) fieldValue).compareTo(value) > 0;
                     }
                     break;
+
                 case LESS_THAN:
-                    if (fieldValue instanceof Comparable && value instanceof Comparable) {
+                    if (fieldValue instanceof Integer && value instanceof Integer) {
+                        return (Integer) fieldValue < (Integer) value;
+                    } else if (fieldValue instanceof String && value instanceof String) {
+                        return ((String) fieldValue).compareTo((String) value) < 0;
+                    } else if (fieldValue instanceof Comparable && value instanceof Comparable && fieldValue.getClass().equals(value.getClass())) {
                         return ((Comparable) fieldValue).compareTo(value) < 0;
                     }
                     break;

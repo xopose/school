@@ -1,13 +1,6 @@
 package com.new_db;
 
-import com.new_db.exceptions.CantCreateDatabaseException;
-import com.new_db.exceptions.IncorrectCommandException;
-import com.new_db.exceptions.TableNotFoundException;
 import com.new_db.sql_processor.Starter;
-import com.new_db.utils.InMemoryCriteria;
-import com.new_db.utils.Transaction;
-
-import java.util.ArrayList;
 
 
 public class Main {
@@ -18,56 +11,33 @@ public class Main {
         Table table = database.getTable("iHateDatabase");
 
         // Работа с записью
-        Record record1 = new InMemoryRecord();
-        record1.setField("name", "Alice");
-        record1.setField("age", 30);
+        starter.execute("Insert into iHateDatabase VALUES (name, Alice), (age, 30)");
+        starter.execute("Insert into iHateDatabase VALUES (name, Bob), (age, 25)");
 
-        Record record2 = new InMemoryRecord();
-        record2.setField("name", "Bob");
-        record2.setField("age", 25);
-
-        table.addRecord(table.nextRecordId(), record1);
-        table.addRecord(table.nextRecordId(), record2);
         starter.execute("Select name FROM iHateDatabase Where name=Bob age>24");
         starter.execute("Delete FROM iHateDatabase Where name=Bob age>24");
         System.out.println("-".repeat(100));
         table.createIndex("name");
 
-        InMemoryCriteria criteria = new InMemoryCriteria();
-        criteria.equals("name", "Alice");
         System.out.println("Результаты запроса:");
         starter.execute("Select * from iHateDatabase");
         System.out.println("-".repeat(100));
 
-        for (Object[] entry : table.queryRecords(criteria)) {
-            long id = (long)entry[0];
-            Record record = (Record)entry[1];
-            System.out.println("Index: " + id + ", Record: ");
-            for(Field field: record.getFields().values()){
-                System.out.println("\t" +field.getName()+ " " +field.getValue());
-            }
-        }
+        starter.execute("Select age FROM iHateDatabase Where name=Alice");
         System.out.println("Сумма возрастов: " + table.sumField("age"));
         System.out.println("Средний возраст: " + table.averageField("age"));
 
-        // Работа с транзакциями
-        Transaction transaction = table.beginTransaction();
-        Record record3 = new InMemoryRecord();
-        record3.setField("name", "Charlie");
-        record3.setField("age", 28);
-        transaction.addRecord(table.nextRecordId(), record3);
-        transaction.commit();
+        starter.execute("Insert into iHateDatabase VALUES (name, Charlie), (age, 29)");
+//        starter.execute("Insert into iHateDatabase (name, age) VALUES (Alex, 25), (Alex, 26), (Alex, 27), (Alex, 28)");
+        starter.execute("Insert into iHateDatabase VALUES (name, Alex), (age, 25)");
 
         System.out.println("После транзакции:");
         System.out.println("Сумма возрастов: " + table.sumField("age"));
         System.out.println("Средний возраст: " + table.averageField("age"));
-        for (Object[] entry : table.queryRecords(criteria)) {
-            long id = (long)entry[0];
-            Record record = (Record)entry[1];
-            System.out.println("Index: " + id + ", Record: ");
-            for(Field field: record.getFields().values()){
-                System.out.println("\t" +field.getName()+ " " +field.getValue());
-            }
-        }
+        starter.execute("Select * FROM iHateDatabase");
+
+        System.out.println("/".repeat(100));
+        starter.execute("Update iHateDatabase set (name, Alex), (age, 25) where name=Bob");
+        starter.execute("Select * FROM iHateDatabase");
     }
 }
