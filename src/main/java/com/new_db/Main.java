@@ -28,7 +28,6 @@ public class Main {
         System.out.println("Средний возраст: " + table.averageField("age"));
 
         starter.execute("Insert into iHateDatabase VALUES (name, Charlie), (age, 29)");
-//        starter.execute("Insert into iHateDatabase (name, age) VALUES (Alex, 25), (Alex, 26), (Alex, 27), (Alex, 28)");
         starter.execute("Insert into iHateDatabase VALUES (name, Alex), (age, 25)");
 
         System.out.println("После транзакции:");
@@ -39,5 +38,10 @@ public class Main {
         System.out.println("/".repeat(100));
         starter.execute("Update iHateDatabase set (name, Alex), (age, 25) where name=Bob");
         starter.execute("Select * FROM iHateDatabase");
+        System.out.println("/".repeat(100));
+        starter.execute("CREATE table iHateDatabase2");
+        System.out.println(database.getAllTables());
+        starter.execute("Delete table iHateDatabase");
+        System.out.println(database.getAllTables().toString());
     }
 }

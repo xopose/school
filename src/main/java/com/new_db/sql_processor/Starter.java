@@ -3,6 +3,7 @@ package com.new_db.sql_processor;
 import com.new_db.Database;
 import com.new_db.exceptions.CantCreateDatabaseException;
 import com.new_db.exceptions.IncorrectCommandException;
+import com.new_db.exceptions.TableNotFoundException;
 
 public class Starter {
     Database database;
@@ -10,7 +11,7 @@ public class Starter {
     public Starter(Database database){
         this.database = database;
     }
-    public void execute(String request) throws IncorrectCommandException, CantCreateDatabaseException {
+    public void execute(String request) throws IncorrectCommandException, CantCreateDatabaseException, TableNotFoundException {
         String[] tokens = request.trim().split("(?=([^\"]*\"[^\"]*\")*[^\"]*$)\\s+");
         if (tokens.length == 0) {
             throw new IncorrectCommandException("Empty command");
